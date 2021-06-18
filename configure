@@ -166,11 +166,13 @@ if [ "$status_PKG_CPPFLAGS" -ne 0 ]; then
 fi
 
 echo == generating src/Makevars
+echo PKG_LIBS_VALUE=\"$PKG_LIBS_VALUE\" > tmp.R
+echo PKG_CPPFLAGS_VALUE=\"$PKG_CPPFLAGS_VALUE\" >> tmp.R
+echo DO_UPSTREAM=\"$DO_UPSTREAM\" >> tmp.R
 
-cat src/Makevars.in | \
-    sed "s|@@@PKG_LIBS@@@|$PKG_LIBS_VALUE|g" | \
-    sed "s|@@@PKG_CPPFLAGS@@@|$PKG_CPPFLAGS_VALUE|g" | \
-    sed "s|@@@DO_UPSTREAM@@@|$DO_UPSTREAM|g" \
-    > src/Makevars
+${R_HOME}/bin/R CMD BATCH inst/sed.R
+cat sed.Rout
+rm sed.Rout
+rm tmp.R
 
 echo ====== configuring symengine R package DONE ======
